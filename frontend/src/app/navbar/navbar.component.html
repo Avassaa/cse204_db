@@ -1,0 +1,89 @@
+<div class="px-3 py-3">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-2 rounded-3">
+    <a class="navbar-brand px-4" routerLink="/home">MusiCo</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mx-left">
+        <li class="nav-item active">
+          <a class="nav-link" routerLink="/home">Home</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/artists">Artists</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/playlists">Playlists</a>
+        </li>
+      </ul>
+      <div class="placeholder mx-auto"></div>
+      <form
+        (ngSubmit)="submitSearch()"
+        class="form-inline my-2 my-lg-0 search-container"
+      >
+        <div class="input-group">
+          <input
+            #searchInput
+            [(ngModel)]="searchTerm"
+            name="searchTerm"
+            class="form-control mr-sm-0"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+            (input)="onSearch()"
+            (focus)="onSearch()"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
+          />
+          <div class="form-placeholder mx-2"></div>
+          <div class="input-group-append">
+            <button class="btn btn-outline-light" type="submit">
+              <i class="bi bi-search"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Search Results Dropdown -->
+        <div
+          #searchResultsContainer
+          class="search-results-dropdown"
+          *ngIf="showSearchResults"
+        >
+          <div
+            *ngIf="searchResults && searchResults.length > 0; else noResults"
+          >
+            <div
+              *ngFor="let song of searchResults"
+              class="search-result-item"
+              (click)="navigateToSong(song)"
+            >
+              <div class="song-name">{{ song.songName }}</div>
+              <div class="song-genre">{{ song.songGenre }}</div>
+            </div>
+          </div>
+          <ng-template #noResults>
+            <div class="no-results">No songs found</div>
+          </ng-template>
+        </div>
+      </form>
+
+      <div *ngIf="auth.isLoggedIn()" class="ml-3 px-3">
+        <button class="btn btn-outline-danger" (click)="logout()">
+          Logout
+        </button>
+      </div>
+    </div>
+  </nav>
+</div>

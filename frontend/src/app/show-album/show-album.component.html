@@ -1,0 +1,317 @@
+<div class="container py-4">
+  <div *ngIf="isLoading" class="text-center text-light">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && album" class="card bg-dark text-light">
+    <div class="card-header">
+      <h2 class="mb-0">{{ album.albumName }}</h2>
+    </div>
+    <div class="card-body">
+      <div class="row mb-4">
+        <div class="col-md-12">
+          <h4>Description</h4>
+          <p>{{ album.albumDescription }}</p>
+
+          <h4>Release Date</h4>
+          <p>{{ album.albumReleaseDate | date }}</p>
+        </div>
+      </div>
+
+      <!-- Songs Section -->
+      <div class="mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+          <h3>Songs</h3>
+          <button class="btn btn-primary" (click)="openCreateSongModal()">
+            Add New Song
+          </button>
+        </div>
+
+        <div class="table-responsive mt-3">
+          <table class="table table-dark table-hover align-middle">
+            <thead>
+              <tr>
+                <th scope="col">#ID</th>
+                <th scope="col">Song Name</th>
+                <th scope="col">Duration</th>
+                <th scope="col">Genre</th>
+                <th scope="col">Explicit</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let song of songs">
+                <td>{{ song.songID }}</td>
+                <td>{{ song.songName }}</td>
+                <td>{{ song.songDuration }}</td>
+                <td>{{ song.songGenre }}</td>
+                <td>
+                  <span *ngIf="song.songExplicit" class="badge bg-danger"
+                    >Yes</span
+                  >
+                  <span *ngIf="!song.songExplicit" class="badge bg-success"
+                    >No</span
+                  >
+                </td>
+                <td>
+                  <button
+                    class="btn btn-warning btn-sm m-1"
+                    (click)="openEditSongModal(song)"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    class="btn btn-danger btn-sm m-1"
+                    (click)="openDeleteSongModal(song.songID)"
+                  >
+                    Remove
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="songs.length === 0">
+                <td colspan="6" class="text-center">
+                  No songs found for this album.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer d-flex justify-content-between">
+      <button class="btn btn-secondary" routerLink="/artists">
+        Back to Artists
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !album" class="alert alert-danger">
+    Album not found
+  </div>
+</div>
+
+<!-- Create Song Modal -->
+<ng-container *ngIf="showCreateSongModal">
+  <div class="modal-backdrop fade show"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title">Create Song</h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            (click)="closeCreateSongModal()"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="songName" class="form-label">Song Name</label>
+              <input
+                type="text"
+                class="form-control bg-dark text-light border-secondary"
+                id="songName"
+                [(ngModel)]="newSong.songName"
+                name="songName"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="songDuration" class="form-label"
+                >Duration (mm:ss)</label
+              >
+              <input
+                type="text"
+                class="form-control bg-dark text-light border-secondary"
+                id="songDuration"
+                [(ngModel)]="newSong.songDuration"
+                name="songDuration"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="songGenre" class="form-label">Genre</label>
+              <input
+                type="text"
+                class="form-control bg-dark text-light border-secondary"
+                id="songGenre"
+                [(ngModel)]="newSong.songGenre"
+                name="songGenre"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="songLyrics" class="form-label">Lyrics</label>
+              <textarea
+                class="form-control bg-dark text-light border-secondary"
+                id="songLyrics"
+                [(ngModel)]="newSong.songLyrics"
+                name="songLyrics"
+                rows="3"
+              ></textarea>
+            </div>
+            <div class="mb-3 form-check">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                id="songExplicit"
+                [(ngModel)]="newSong.songExplicit"
+                name="songExplicit"
+              />
+              <label class="form-check-label" for="songExplicit"
+                >Explicit Content</label
+              >
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="closeCreateSongModal()"
+          >
+            Close
+          </button>
+          <button type="button" class="btn btn-primary" (click)="createSong()">
+            Save Song
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<!-- Edit Song Modal -->
+<ng-container *ngIf="showEditSongModal">
+  <div class="modal-backdrop fade show"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title">Edit Song</h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            (click)="closeEditSongModal()"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="editSongName" class="form-label">Song Name</label>
+              <input
+                type="text"
+                class="form-control bg-dark text-light border-secondary"
+                id="editSongName"
+                [(ngModel)]="editingSong.songName"
+                name="editSongName"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="editSongDuration" class="form-label"
+                >Duration (mm:ss)</label
+              >
+              <input
+                type="text"
+                class="form-control bg-dark text-light border-secondary"
+                id="editSongDuration"
+                [(ngModel)]="editingSong.songDuration"
+                name="editSongDuration"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="editSongGenre" class="form-label">Genre</label>
+              <input
+                type="text"
+                class="form-control bg-dark text-light border-secondary"
+                id="editSongGenre"
+                [(ngModel)]="editingSong.songGenre"
+                name="editSongGenre"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="editSongLyrics" class="form-label">Lyrics</label>
+              <textarea
+                class="form-control bg-dark text-light border-secondary"
+                id="editSongLyrics"
+                [(ngModel)]="editingSong.songLyrics"
+                name="editSongLyrics"
+                rows="3"
+              ></textarea>
+            </div>
+            <div class="mb-3 form-check">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                id="editSongExplicit"
+                [(ngModel)]="editingSong.songExplicit"
+                name="editSongExplicit"
+              />
+              <label class="form-check-label" for="editSongExplicit"
+                >Explicit Content</label
+              >
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="closeEditSongModal()"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="confirmEditSong()"
+          >
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<!-- Delete Song Modal -->
+<ng-container *ngIf="showDeleteSongModal">
+  <div class="modal-backdrop fade show"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title">Delete Song</h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            (click)="closeDeleteSongModal()"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete this song? This action cannot be
+          undone.
+        </div>
+        <div class="modal-footer border-secondary">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="closeDeleteSongModal()"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="confirmDeleteSong()"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

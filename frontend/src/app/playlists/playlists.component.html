@@ -1,0 +1,205 @@
+<div class="playlists-container">
+  <h2>My Playlists</h2>
+  <div *ngIf="loading" class="loading">Loading...</div>
+  <div *ngIf="error" class="error-msg">{{ error }}</div>
+  <button class="btn-show-all my-4" (click)="openCreateModal()">
+    + Create Playlist
+  </button>
+  <table *ngIf="!loading && myPlaylists.length" class="playlist-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Songs</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let pl of myPlaylists">
+        <td>{{ pl.playlistName }}</td>
+        <td>{{ pl.songCount }}</td>
+        <td>
+          <button class="btn-action" (click)="openEditModal(pl)">Edit</button>
+          <button class="btn-action btn-danger" (click)="openDeleteModal(pl)">
+            Delete
+          </button>
+          <button
+            class="btn-action btn-add-songs"
+            (click)="openAddSongsModal(pl)"
+          >
+            Add Songs
+          </button>
+          <button class="btn-action" (click)="viewPlaylist(pl)">View</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="!loading && !myPlaylists.length" class="empty-msg">
+    You have no playlists.
+  </div>
+  <button class="btn-show-all" (click)="loadAllPlaylists()" *ngIf="!showAll">
+    Show All Playlists
+  </button>
+  <button class="btn-hide-all" (click)="hideAllPlaylists()" *ngIf="showAll">
+    Hide All Playlists
+  </button>
+
+  <div *ngIf="showAll">
+    <h2 class="mt-4">All Playlists</h2>
+    <table *ngIf="allPlaylists.length" class="playlist-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Owner</th>
+          <th>Songs</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pl of allPlaylists">
+          <td>{{ pl.playlistName }}</td>
+          <td>{{ pl.owner.userName }}</td>
+          <td>{{ pl.songCount }}</td>
+          <td>
+            <button class="btn-action" (click)="viewPlaylist(pl)">View</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="!allPlaylists.length" class="empty-msg">
+      No playlists found.
+    </div>
+  </div>
+
+  <!-- Create Modal -->
+  <div class="modal" *ngIf="showCreateModal">
+    <div class="modal-content">
+      <h3>Create Playlist</h3>
+      <label>Name</label>
+      <input [(ngModel)]="newPlaylist.playlistName" />
+      <label>Description</label>
+      <input [(ngModel)]="newPlaylist.playlistDescription" />
+      <label>Picture URL</label>
+      <input [(ngModel)]="newPlaylist.playlistPicture" />
+      <div class="modal-actions">
+        <button class="btn btn-primary" (click)="createPlaylist()">
+          Create
+        </button>
+        <button class="btn btn-secondary" (click)="showCreateModal = false">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal" *ngIf="showEditModal">
+    <div class="modal-content h-5 w-25">
+      <h3>Edit Playlist</h3>
+      <label>Name</label>
+      <input [(ngModel)]="selectedPlaylist.playlistName" />
+      <label>Description</label>
+      <input [(ngModel)]="selectedPlaylist.playlistDescription" />
+      <label>Picture URL</label>
+      <input [(ngModel)]="selectedPlaylist.playlistPicture" />
+      <div class="modal-actions">
+        <button class="btn btn-primary" (click)="updatePlaylist()">Save</button>
+        <button class="btn btn-secondary" (click)="showEditModal = false">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal" *ngIf="showDeleteModal">
+    <div class="modal-content h-5 w-25">
+      <h3>Delete Playlist</h3>
+      <p>
+        Are you sure you want to delete "{{ selectedPlaylist.playlistName }}"?
+      </p>
+      <div class="modal-actions">
+        <button class="btn btn-danger" (click)="deletePlaylist()">
+          Delete
+        </button>
+        <button class="btn btn-secondary" (click)="showDeleteModal = false">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" *ngIf="showAddSongsModal">
+    <div class="modal-content h-5 w-25">
+      <h3>Add Songs to "{{ selectedPlaylistForSongs?.playlistName }}"</h3>
+
+      <!-- Search input -->
+      <div class="search-field-container">
+        <input
+          type="text"
+          class="search-field-input"
+          [(ngModel)]="searchQuery"
+          (input)="searchSongs()"
+          placeholder="Search songs..."
+        />
+      </div>
+
+      <div
+        *ngIf="allSongs.length; else loadingSongs"
+        style="
+          max-height: 300px;
+          overflow-y: auto;
+          border: 1px solid #eee;
+          padding: 8px;
+          margin: 10px 0;
+        "
+      >
+        <div *ngFor="let song of allSongs" style="padding: 4px 0">
+          <label style="display: block; cursor: pointer">
+            <input
+              type="checkbox"
+              [checked]="selectedSongIds.has(song.songID)"
+              (change)="toggleSongSelection(song.songID, $event)"
+            />
+            {{ song.songName }}
+            <small class="text-secondary">{{ song.songGenre }}</small>
+          </label>
+        </div>
+      </div>
+      <ng-template #loadingSongs>
+        <div>Loading songs...</div>
+      </ng-template>
+      <div class="modal-actions">
+        <button class="btn btn-primary" (click)="addSongsToPlaylist()">
+          Add
+        </button>
+        <button class="btn btn-secondary" (click)="showAddSongsModal = false">
+          Cancel
+        </button>
+      </div>
+      <div *ngIf="addSongsError" class="error-msg">{{ addSongsError }}</div>
+    </div>
+  </div>
+
+  <!-- Playlist Songs Modal -->
+  <div class="modal" *ngIf="showPlaylistSongsModal">
+    <div class="modal-content h-5 w-25">
+      <h3>Songs in "{{ selectedPlaylistForView?.playlistName }}"</h3>
+      <ul *ngIf="playlistSongs.length; else noSongs">
+        <li *ngFor="let song of playlistSongs">
+          {{ song.songName }}
+        </li>
+      </ul>
+      <ng-template #noSongs>
+        <div>No songs in this playlist.</div>
+      </ng-template>
+      <div class="modal-actions">
+        <button
+          class="btn btn-secondary"
+          (click)="showPlaylistSongsModal = false"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

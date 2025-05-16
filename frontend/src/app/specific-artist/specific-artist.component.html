@@ -1,0 +1,287 @@
+<div class="container py-4">
+  <div *ngIf="isLoading" class="text-center text-light">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && artist" class="card bg-dark text-light">
+    <div class="card-header">
+      <h2 class="mb-0">{{ artist.artistName }}</h2>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-4">
+          <img
+            [src]="
+              artist.artistPicture ||
+              'https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=facearea&w=400&h=400&q=80'
+            "
+            class="img-fluid rounded"
+            [alt]="artist.artistName"
+            (error)="
+              artist.artistPicture =
+                'https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=facearea&w=400&h=400&q=80'
+            "
+          />
+        </div>
+        <div class="col-md-8">
+          <h4>Description</h4>
+          <p>{{ artist.artistDescription }}</p>
+
+          <h4>Location</h4>
+          <p>{{ artist.artistLocation }}</p>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <div class="d-flex justify-content-between align-items-center">
+          <h3>Albums</h3>
+          <button class="btn btn-primary" (click)="openCreateAlbumModal()">
+            Add New Album
+          </button>
+        </div>
+
+        <div class="table-responsive mt-3">
+          <table class="table table-dark table-hover align-middle">
+            <thead>
+              <tr>
+                <th scope="col">#ID</th>
+                <th scope="col">Album Name</th>
+                <th scope="col">Release Date</th>
+                <th scope="col">Album Description</th>
+                <th scope="col">Song Count</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let album of albums">
+                <td>{{ album.albumID }}</td>
+                <td>{{ album.albumName }}</td>
+                <td>{{ album.albumReleaseDate | date }}</td>
+                <td>{{ album.albumDescription }}</td>
+                <td>{{ album.songCount }}</td>
+                <td>
+                  <button
+                    class="btn btn-sm btn-info m-1"
+                    [routerLink]="['/album', album.albumID]"
+                  >
+                    View Details
+                  </button>
+                  <button
+                    class="btn btn-warning btn-sm m-1"
+                    (click)="openEditAlbumModal(album)"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    class="btn btn-danger btn-sm m-1"
+                    (click)="openDeleteAlbumModal(album.albumID)"
+                  >
+                    Remove
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="albums.length === 0">
+                <td colspan="5" class="text-center">
+                  No albums found for this artist.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-secondary" routerLink="/artists">
+        Back to Artists
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !artist" class="alert alert-danger">
+    Artist not found
+  </div>
+</div>
+
+<!-- Create Album Modal -->
+<ng-container *ngIf="showCreateAlbumModal">
+  <div class="modal-backdrop fade show"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title">Create Album</h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            (click)="closeCreateAlbumModal()"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="albumName" class="form-label">Album Name</label>
+              <input
+                type="text"
+                class="form-control bg-dark text-light border-secondary"
+                id="albumName"
+                [(ngModel)]="newAlbum.albumName"
+                name="albumName"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="releaseDate" class="form-label">Release Date</label>
+              <input
+                type="date"
+                class="form-control bg-dark text-light border-secondary"
+                id="releaseDate"
+                [(ngModel)]="newAlbum.albumReleaseDate"
+                name="releaseDate"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="albumDescription" class="form-label"
+                >Album Description</label
+              >
+              <input
+                type="text"
+                class="form-control bg-dark text-light border-secondary"
+                id="albumDescription"
+                [(ngModel)]="newAlbum.albumDescription"
+                name="albumDescription"
+              />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="closeCreateAlbumModal()"
+          >
+            Close
+          </button>
+          <button type="button" class="btn btn-primary" (click)="createAlbum()">
+            Save Album
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<!-- Edit Album Modal -->
+<ng-container *ngIf="showEditAlbumModal">
+  <div class="modal-backdrop fade show"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title">Edit Album</h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            (click)="closeEditAlbumModal()"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="editAlbumName" class="form-label">Album Name</label>
+              <input
+                type="text"
+                class="form-control bg-dark text-light border-secondary"
+                id="editAlbumName"
+                [(ngModel)]="editingAlbum.albumName"
+                name="editAlbumName"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="editReleaseDate" class="form-label"
+                >Release Date</label
+              >
+              <input
+                type="date"
+                class="form-control bg-dark text-light border-secondary"
+                id="editReleaseDate"
+                [(ngModel)]="editingAlbum.albumReleaseDate"
+                name="editReleaseDate"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="albumDescription" class="form-label"
+                >Album Description</label
+              >
+              <input
+                type="text"
+                class="form-control bg-dark text-light border-secondary"
+                id="editAlbumDescription"
+                [(ngModel)]="editingAlbum.albumDescription"
+                name="editAlbumDescription"
+              />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="closeEditAlbumModal()"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="confirmEditAlbum()"
+          >
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<!-- Delete Album Modal -->
+<ng-container *ngIf="showDeleteAlbumModal">
+  <div class="modal-backdrop fade show"></div>
+  <div class="modal show d-block" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title">Delete Album</h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            (click)="closeDeleteAlbumModal()"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete this album? This action cannot be
+          undone.
+        </div>
+        <div class="modal-footer border-secondary">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="closeDeleteAlbumModal()"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="confirmDeleteAlbum()"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

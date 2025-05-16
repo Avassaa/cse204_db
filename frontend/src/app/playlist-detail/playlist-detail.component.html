@@ -1,0 +1,227 @@
+<div class="playlist-detail-container bg-dark text-light p-4">
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-light" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger" role="alert">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && playlist" class="playlist-header mb-4">
+    <div class="playlist-info">
+      <h1 class="display-4">{{ playlist.playlistName }}</h1>
+      <p *ngIf="playlist.playlistDescription" class="lead text-muted">
+        {{ playlist.playlistDescription }}
+      </p>
+      <p *ngIf="playlist.owner" class="text-secondary">
+        <small>Created by: {{ playlist.owner.userName }}</small>
+      </p>
+      <div class="mt-3">
+        <button
+          *ngIf="isOwner"
+          class="btn btn-outline-primary me-2"
+          (click)="showAddSongsModal = true"
+        >
+          <i class="bi bi-plus-circle me-1"></i> Add Songs
+        </button>
+        <button
+          class="btn btn-outline-secondary"
+          (click)="router.navigate(['/playlists'])"
+        >
+          <i class="bi bi-arrow-left me-1"></i> Back
+        </button>
+      </div>
+    </div>
+    <div *ngIf="playlist.playlistPicture" class="playlist-image">
+      <img
+        [src]="playlist.playlistPicture"
+        alt="{{ playlist.playlistName }}"
+        class="img-fluid rounded shadow"
+      />
+    </div>
+  </div>
+
+  <div *ngIf="!loading && songs.length > 0" class="songs-list mt-4">
+    <h2 class="border-bottom pb-2 mb-3">Songs</h2>
+    <div class="table-responsive">
+      <table class="table table-dark table-hover">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Title</th>
+            <th scope="col">Duration</th>
+            <th scope="col">Genre</th>
+            <th scope="col" *ngIf="isOwner"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let song of songs; let i = index"
+            [class.selected]="selectedSongsToRemove.has(song.songID)"
+          >
+            <td>{{ i + 1 }}</td>
+            <td>{{ song.songName }}</td>
+            <td>{{ song.songDuration }}</td>
+            <td>
+              <span class="badge bg-secondary">{{ song.songGenre }}</span>
+            </td>
+            <td *ngIf="isOwner" class="text-end">
+              <button
+                class="btn btn-sm btn-outline-danger"
+                (click)="toggleSongForRemoval(song.songID)"
+              >
+                <i
+                  class="bi"
+                  [ngClass]="
+                    selectedSongsToRemove.has(song.songID) ? 'bi-check' : 'bi-x'
+                  "
+                ></i>
+                {{
+                  selectedSongsToRemove.has(song.songID) ? "Selected" : "Remove"
+                }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div
+    *ngIf="isOwner && selectedSongsToRemove.size > 0"
+    class="mt-3 d-flex justify-content-end"
+  >
+    <button
+      class="btn btn-danger"
+      [disabled]="removingSongs"
+      (click)="removeSongsFromPlaylist()"
+    >
+      <span
+        *ngIf="removingSongs"
+        class="spinner-border spinner-border-sm me-2"
+        role="status"
+        aria-hidden="true"
+      ></span>
+      Remove {{ selectedSongsToRemove.size }} Selected Song{{
+        selectedSongsToRemove.size > 1 ? "s" : ""
+      }}
+    </button>
+    <button
+      class="btn btn-outline-secondary ms-2"
+      (click)="selectedSongsToRemove.clear()"
+    >
+      Cancel
+    </button>
+  </div>
+
+  <div
+    *ngIf="!loading && songs.length === 0"
+    class="text-center text-muted py-5"
+  >
+    <i class="bi bi-music-note-list display-4"></i>
+    <p class="mt-2">This playlist doesn't have any songs yet.</p>
+  </div>
+
+  <div
+    class="modal fade show"
+    [ngClass]="{ 'd-block': showAddSongsModal }"
+    tabindex="-1"
+    role="dialog"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title">
+            Add Songs to "{{ playlist?.playlistName }}"
+          </h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            (click)="showAddSongsModal = false"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <div class="input-group">
+              <span
+                class="input-group-text bg-dark text-light border-secondary"
+              >
+                <i class="bi bi-search"></i>
+              </span>
+              <input
+                type="text"
+                class="form-control bg-dark text-light border-secondary"
+                [(ngModel)]="searchQuery"
+                (input)="searchSongs()"
+                placeholder="Search songs..."
+              />
+            </div>
+          </div>
+
+          <div
+            *ngIf="allSongs.length; else loadingSongs"
+            class="songs-checklist"
+          >
+            <div
+              *ngFor="let song of allSongs"
+              class="form-check border-bottom border-secondary py-2"
+            >
+              <input
+                class="form-check-input"
+                type="checkbox"
+                [id]="'song-' + song.songID"
+                [checked]="selectedSongIds.has(song.songID)"
+                (change)="toggleSongSelection(song.songID, $event)"
+              />
+              <label
+                class="form-check-label w-100"
+                [for]="'song-' + song.songID"
+              >
+                <div>{{ song.songName }}</div>
+                <small class="text-muted">{{ song.songGenre }}</small>
+              </label>
+            </div>
+          </div>
+          <ng-template #loadingSongs>
+            <div class="text-center py-3">
+              <div
+                class="spinner-border spinner-border-sm text-light"
+                role="status"
+              >
+                <span class="visually-hidden">Loading songs...</span>
+              </div>
+              <span class="ms-2">Loading songs...</span>
+            </div>
+          </ng-template>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="showAddSongsModal = false"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="addingSongs || selectedSongIds.size === 0"
+            (click)="addSongsToPlaylist()"
+          >
+            <span
+              *ngIf="addingSongs"
+              class="spinner-border spinner-border-sm me-1"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            Add Selected Songs
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop fade show" *ngIf="showAddSongsModal"></div>
+</div>

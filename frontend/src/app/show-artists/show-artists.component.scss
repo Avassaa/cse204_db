@@ -1,0 +1,116 @@
+// Dark theme variables
+$background-dark: #121212;
+$surface-dark: #23272b;
+$border-dark: #2c3034;
+$text-primary: #ffffff;
+$text-secondary: #868e96;
+$accent-color: #6ea8fe;
+
+.artists-container {
+  background-color: $background-dark;
+  min-height: 100vh;
+  padding: 2rem;
+  color: $text-primary;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid $border-dark;
+}
+
+.artists-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.5rem;
+
+  @media (max-width: 576px) {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+}
+
+.artist-card {
+  background-color: $surface-dark;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  .artist-image {
+    height: 180px;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .artist-info {
+    padding: 1rem;
+
+    .artist-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .artist-location {
+      font-size: 0.9rem;
+      color: $text-secondary;
+      margin-bottom: 1rem;
+    }
+
+    .artist-actions {
+      display: flex;
+      justify-content: space-between;
+
+      .btn {
+        flex: 1;
+        text-align: center;
+        padding: 0.5rem;
+        border-radius: 4px;
+        font-weight: 500;
+        font-size: 0.9rem;
+
+        &:first-child {
+          margin-right: 0.5rem;
+        }
+      }
+
+      .btn-primary {
+        background-color: $accent-color;
+        color: $background-dark;
+      }
+
+      .btn-secondary {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: $text-primary;
+      }
+    }
+  }
+}
+
+// Loading and empty states
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 0;
+  color: $text-secondary;
+}

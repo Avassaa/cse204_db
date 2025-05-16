@@ -1,0 +1,133 @@
+.playlist-detail-container {
+  min-height: 100vh;
+}
+
+.playlist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+  @media (max-width: 767px) {
+    flex-direction: column;
+  }
+}
+
+.playlist-info {
+  flex: 1;
+}
+
+.playlist-image {
+  width: 200px;
+  height: 200px;
+  margin-left: 20px;
+
+  @media (max-width: 767px) {
+    margin-left: 0;
+    margin-top: 20px;
+    align-self: center;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.table-dark {
+  --bs-table-bg: #212529;
+  --bs-table-striped-bg: #2c3034;
+  --bs-table-striped-color: #fff;
+  --bs-table-active-bg: #373b3e;
+  --bs-table-active-color: #fff;
+  --bs-table-hover-bg: #323539;
+  --bs-table-hover-color: #fff;
+  color: #fff;
+  border-color: #373b3e;
+}
+
+.modal {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  border: 1px solid #495057;
+}
+
+.songs-checklist {
+  max-height: 350px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #343a40;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #495057;
+    border-radius: 4px;
+  }
+
+  .form-check {
+    padding-left: 1.8rem;
+
+    .form-check-input {
+      margin-left: -1.8rem;
+    }
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+}
+
+// Bootstrap overrides
+.btn-outline-primary {
+  color: #6ea8fe;
+  border-color: #6ea8fe;
+
+  &:hover {
+    background-color: #0d6efd;
+    color: #fff;
+  }
+}
+
+.btn-outline-secondary {
+  color: #a7acb1;
+  border-color: #a7acb1;
+
+  &:hover {
+    background-color: #6c757d;
+    color: #fff;
+  }
+}
+
+// For a more polished dark theme look
+.bg-dark {
+  background-color: #121212 !important;
+}
+
+.border-secondary {
+  border-color: #2c3034 !important;
+}
+
+.text-muted {
+  color: #868e96 !important;
+}
+
+tr.selected {
+  background-color: rgba(220, 53, 69, 0.1) !important;
+}
+
+.btn-outline-danger {
+  color: #ff5252;
+  border-color: #ff5252;
+
+  &:hover {
+    background-color: #ff5252;
+    color: #fff;
+  }
+}

@@ -1,0 +1,265 @@
+.home-container {
+  color: #f5f6fa;
+  background-color: #121212;
+  min-height: 100vh;
+}
+
+// Hero Section
+.hero-section {
+  position: relative;
+  height: 70vh;
+  min-height: 500px;
+  background: linear-gradient(135deg, #673ab7 0%, #00bcd4 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  padding-top: 80px;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  padding: 0 20px;
+}
+
+.hero-wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+.brand {
+  background: linear-gradient(90deg, #ffffff 0%, #00bcd4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
+
+.display-1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.lead {
+  font-size: 1.4rem;
+  margin-bottom: 2rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.hero-cta {
+  margin-top: 2rem;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #00bcd4 0%, #673ab7 100%);
+  border: none;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(90deg, #00bcd4 30%, #673ab7 100%);
+  }
+}
+
+.btn-outline-light {
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+}
+
+// Features Section
+.features-section {
+  padding: 5rem 0;
+  background-color: #121212;
+}
+
+.feature-card {
+  background: #23272f;
+  border-radius: 12px;
+  padding: 2rem;
+  height: 100%;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    margin: 1.5rem 0 1rem;
+    color: #00bcd4;
+  }
+
+  p {
+    color: #b2becd;
+    margin-bottom: 0;
+  }
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  color: #673ab7;
+  height: 60px;
+  width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(103, 58, 183, 0.1);
+  border-radius: 50%;
+  margin: 0 auto;
+}
+
+// CTA Section
+.cta-section {
+  padding: 5rem 0;
+  background: linear-gradient(90deg, #23272f 0%, #121212 100%);
+}
+
+// Gallery/Testimonial Section
+.gallery-section {
+  padding: 5rem 0;
+  background-color: #23272f;
+}
+
+.gallery-content {
+  h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: #00bcd4;
+  }
+
+  .lead {
+    margin-bottom: 1.5rem;
+  }
+}
+
+.feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0 0;
+
+  li {
+    padding: 0.5rem 0;
+    font-size: 1.1rem;
+
+    i {
+      color: #00bcd4;
+      margin-right: 10px;
+    }
+  }
+}
+
+// Music Visualizer
+.music-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
+
+.equalizer {
+  display: flex;
+  align-items: flex-end;
+  height: 200px;
+  width: 200px;
+  gap: 8px;
+
+  .bar {
+    background: linear-gradient(to top, #00bcd4, #673ab7);
+    width: 20px;
+    border-radius: 10px 10px 0 0;
+    animation: equalize 1.5s infinite alternate;
+
+    &:nth-child(1) {
+      animation-delay: -1.2s;
+      height: 30%;
+    }
+    &:nth-child(2) {
+      animation-delay: -2.3s;
+      height: 60%;
+    }
+    &:nth-child(3) {
+      animation-delay: -0.6s;
+      height: 90%;
+    }
+    &:nth-child(4) {
+      animation-delay: -1.5s;
+      height: 40%;
+    }
+    &:nth-child(5) {
+      animation-delay: -0.8s;
+      height: 70%;
+    }
+    &:nth-child(6) {
+      animation-delay: -2.5s;
+      height: 50%;
+    }
+  }
+}
+
+@keyframes equalize {
+  0% {
+    height: 30%;
+  }
+  10% {
+    height: 90%;
+  }
+  20% {
+    height: 60%;
+  }
+  30% {
+    height: 80%;
+  }
+  40% {
+    height: 40%;
+  }
+  50% {
+    height: 70%;
+  }
+  60% {
+    height: 30%;
+  }
+  70% {
+    height: 90%;
+  }
+  80% {
+    height: 50%;
+  }
+  90% {
+    height: 80%;
+  }
+  100% {
+    height: 40%;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .display-1 {
+    font-size: 2.8rem;
+  }
+
+  .hero-section {
+    min-height: 400px;
+  }
+}

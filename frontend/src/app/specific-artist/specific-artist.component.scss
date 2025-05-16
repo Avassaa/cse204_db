@@ -1,0 +1,16 @@
+img {
+  border-radius: 1rem;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
+  object-fit: cover;
+  width: 100%;
+  max-width: 250px;
+  height: 250px;
+  background: #181a1b;
+  border: 2px solid #343a40;
+}
+
+.card {
+  border-radius: 1rem;
+  background: #23272b;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
+}

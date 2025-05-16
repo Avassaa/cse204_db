@@ -1,0 +1,88 @@
+<form
+  (ngSubmit)="onSubmit()"
+  #registerForm="ngForm"
+  class="auth-form"
+  novalidate
+>
+  <h2>Register</h2>
+  <div class="form-group">
+    <label>Username</label>
+    <input
+      type="text"
+      name="userName"
+      [(ngModel)]="registerData.userName"
+      #userName="ngModel"
+      required
+      minlength="1"
+    />
+    <div
+      class="field-error"
+      *ngIf="userName.invalid && (userName.dirty || userName.touched)"
+    >
+      <span *ngIf="userName.errors?.['required']">Username is required.</span>
+      <span *ngIf="userName.errors?.['minlength']"
+        >Username must be at least 1 character.</span
+      >
+    </div>
+  </div>
+  <div class="form-group">
+    <label>Email</label>
+    <input
+      type="email"
+      name="userEmail"
+      [(ngModel)]="registerData.userEmail"
+      #userEmail="ngModel"
+      required
+      email
+    />
+    <div
+      class="field-error"
+      *ngIf="userEmail.invalid && (userEmail.dirty || userEmail.touched)"
+    >
+      <span *ngIf="userEmail.errors?.['required']">Email is required.</span>
+      <span *ngIf="userEmail.errors?.['email']"
+        >Please enter a valid email.</span
+      >
+    </div>
+  </div>
+  <div class="form-group">
+    <label>Password</label>
+    <input
+      type="password"
+      name="userPassword"
+      [(ngModel)]="registerData.userPassword"
+      #userPassword="ngModel"
+      required
+      minlength="6"
+    />
+    <div
+      class="field-error"
+      *ngIf="
+        userPassword.invalid && (userPassword.dirty || userPassword.touched)
+      "
+    >
+      <span *ngIf="userPassword.errors?.['required']"
+        >Password is required.</span
+      >
+      <span *ngIf="userPassword.errors?.['minlength']"
+        >Password must be at least 6 characters.</span
+      >
+    </div>
+  </div>
+  <div class="form-group">
+    <label>Location</label>
+    <input
+      type="text"
+      name="userLocation"
+      [(ngModel)]="registerData.userLocation"
+    />
+  </div>
+  <button type="submit" class="btn-auth" [disabled]="registerForm.invalid">
+    Register
+  </button>
+  <div *ngIf="errorMessage" class="error-msg">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="success-msg">{{ successMessage }}</div>
+  <div class="switch-auth">
+    Already have an account? <a routerLink="/login">Login</a>
+  </div>
+</form>

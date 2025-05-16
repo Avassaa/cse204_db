@@ -1,0 +1,320 @@
+<div class="container py-4">
+  <div class="text-center text-light mb-4">Artists</div>
+  <div class="card bg-dark text-light border-primary">
+    <div class="card-header"><h4 class="mb-0">Artists Directory</h4></div>
+
+    <div class="table-responsive">
+      <table class="table table-dark table-hover align-middle mb-0">
+        <thead>
+          <tr>
+            <th scope="col">#ID</th>
+            <th scope="col">Artist Name</th>
+            <th scope="col">Artist Description</th>
+            <th scope="col">Artist Location</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngIf="artists.length > 0; else noArtistsFound">
+            <ng-container *ngFor="let artist of artists">
+              <ng-container
+                [ngTemplateOutlet]="artistRow"
+                [ngTemplateOutletContext]="{ $implicit: artist }"
+              >
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-end">
+    <button
+      class="btn btn-primary btn-md my-2"
+      (click)="openCreateArtistModal()"
+    >
+      Create New Artist
+    </button>
+  </div>
+</div>
+
+<ng-container *ngIf="showCreateArtistModal">
+  <div class="modal-backdrop fade show"></div>
+  <div class="modal create-artist-modal show d-block" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title">Create Artist</h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            (click)="showCreateArtistModal = false"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="artistName" class="form-label">Artist Name</label>
+              <input
+                type="text"
+                class="form-control bg-dark text-light border-secondary"
+                id="artistName"
+                [(ngModel)]="newArtist.artistName"
+                name="artistName"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="artistDescription" class="form-label"
+                >Artist Description</label
+              >
+              <textarea
+                class="form-control bg-dark text-light border-secondary"
+                id="artistDescription"
+                rows="3"
+                [(ngModel)]="newArtist.artistDescription"
+                name="artistDescription"
+              ></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label for="artistLocation" class="form-label"
+                >Artist Location</label
+              >
+              <input
+                type="text"
+                class="form-control bg-dark text-light border-secondary"
+                id="artistLocation"
+                [(ngModel)]="newArtist.artistLocation"
+                name="artistLocation"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="artistPicture" class="form-label"
+                >Artist Picture URL</label
+              >
+              <input
+                type="text"
+                class="form-control bg-dark text-light border-secondary"
+                id="artistPicture"
+                [(ngModel)]="newArtist.artistPicture"
+                name="artistPicture"
+              />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            (click)="showCreateArtistModal = false"
+            class="btn btn-secondary"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            (click)="createArtist()"
+            class="btn btn-primary"
+          >
+            Save changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="showDeleteArtistModal">
+  <div class="modal-backdrop fade show"></div>
+  <div class="modal create-artist-modal show d-block" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title">Delete Artist</h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            (click)="showCreateArtistModal = false"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          Do you wish to remove the artist permanently?
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            (click)="showDeleteArtistModal = false"
+            class="btn btn-secondary"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            (click)="confirmDeletion()"
+            class="btn btn-primary"
+          >
+            Save changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #artistRow let-artist>
+  <tr>
+    <td>{{ artist.artistID }}</td>
+    <td>{{ artist.artistName }}</td>
+    <td class="description-cell">{{ artist.artistDescription }}</td>
+    <td>{{ artist.artistLocation }}</td>
+    <td>
+      <ng-container
+        [ngTemplateOutlet]="actionButtons"
+        [ngTemplateOutletContext]="{ $implicit: artist }"
+      >
+      </ng-container>
+    </td>
+  </tr>
+</ng-template>
+
+<ng-template #noArtistsFound>
+  <tr>
+    <td colspan="5" class="text-center">No artists found.</td>
+  </tr>
+</ng-template>
+
+<ng-template #actionButtons let-artist>
+  <button
+    class="btn btn-sm btn-info m-1"
+    [routerLink]="['/artist', artist.artistID]"
+  >
+    View Details
+  </button>
+  <button
+    class="btn btn-warning btn-sm m-1"
+    (click)="openEditArtistModal(artist)"
+  >
+    Edit
+  </button>
+  <button
+    class="btn btn-danger btn-sm m-1"
+    (click)="openDeleteArtistModal(artist.artistID)"
+  >
+    Remove
+  </button>
+</ng-template>
+
+<ng-container *ngIf="showEditArtistModal">
+  <div class="modal-backdrop fade show"></div>
+  <div class="modal edit-artist-modal show d-block" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content bg-dark text-light">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title">Edit Artist</h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            (click)="closeEditModal()"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form *ngIf="editingArtist">
+            <div class="mb-3">
+              <label for="artistName" class="form-label">Artist Name</label>
+              <input
+                type="text"
+                class="form-control bg-dark text-light border-secondary"
+                id="artistName"
+                [(ngModel)]="editingArtist.artistName"
+                name="artistName"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="artistDescription" class="form-label"
+                >Artist Description</label
+              >
+              <textarea
+                class="form-control bg-dark text-light border-secondary"
+                id="artistDescription"
+                rows="3"
+                [(ngModel)]="editingArtist.artistDescription"
+                name="artistDescription"
+              ></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label for="artistLocation" class="form-label"
+                >Artist Location</label
+              >
+              <input
+                type="text"
+                class="form-control bg-dark text-light border-secondary"
+                id="artistLocation"
+                [(ngModel)]="editingArtist.artistLocation"
+                name="artistLocation"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="artistPicture" class="form-label"
+                >Artist Picture URL</label
+              >
+              <input
+                type="text"
+                class="form-control bg-dark text-light border-secondary"
+                id="artistPicture"
+                [(ngModel)]="editingArtist.artistPicture"
+                name="artistPicture"
+              />
+            </div>
+            <div class="image-preview mt-2 mb-3">
+              <label class="form-label">Image Preview</label>
+              <div
+                class="preview-container"
+                style="
+                  width: 300px;
+                  height: 300px;
+                  margin: 0 auto;
+                  overflow: hidden;
+                  border: 2px solid #343a40;
+                  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+                "
+              >
+                <img
+                  [src]="
+                    editingArtist.artistPicture ||
+                    'https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=facearea&w=80&h=80&q=80'
+                  "
+                  alt="Preview"
+                  (error)="
+                    editingArtist.artistPicture =
+                      'https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=facearea&w=80&h=80&q=80'
+                  "
+                  style="width: 100%; height: 100%; object-fit: cover"
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer border-secondary">
+          <button
+            type="button"
+            (click)="closeEditModal()"
+            class="btn btn-secondary"
+          >
+            Cancel
+          </button>
+          <button type="button" (click)="confirmEdit()" class="btn btn-primary">
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
